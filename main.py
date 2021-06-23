@@ -8,13 +8,12 @@ import json
 import os
 import shutil
 
-from pprint import pprint
-
 SCRIPT_PATH = 'bin/scripts'
 PATH = 'config/locales'
 ROOT_DIR = os.path.\
     dirname(os.path.abspath(__file__)).\
     replace(SCRIPT_PATH, '')
+REPLACE_FILES = False
 
 
 def getListOfFiles(dirName):
@@ -176,11 +175,16 @@ if __name__ == "__main__":
     os.makedirs(output_files_dir)
     yml_files_list = getListOfFiles(full_path)
 
+    def outputAction(json_file_path, yml_file_path):
+        if REPLACE_FILES:
+            return outputPath(yml_file_path, full_path, output_files_dir)
+        return json_file_path
+
     for yml_file_path in yml_files_list:
         JSONToYAML(
             json_file_path,
             yml_file_path,
             # provide json_file_path in output_path
             # to override files
-            outputPath(yml_file_path, full_path, output_files_dir)
+            outputAction(json_file_path, yml_file_path)
         )
