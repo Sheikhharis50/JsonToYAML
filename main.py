@@ -9,7 +9,7 @@ import json
 yml_file = 'en.yml'
 json_file = 'input.json'
 # give same name as yml_file to replace it.
-output_file = 'output.yml'
+output_file = 'en.yml'
 
 
 def getJsonData(filename):
@@ -17,10 +17,14 @@ def getJsonData(filename):
     loading a JSONfile.
     @param (filename): string
     '''
-    f = open(filename,)
-    data = json.load(f)
-    f.close()
-    return data
+    try:
+        f = open(filename,)
+        data = json.load(f)
+        f.close()
+        return data
+    except Exception as e:
+        print(e)
+    return None
 
 
 def getYamlData(filename):
@@ -29,10 +33,15 @@ def getYamlData(filename):
     @param (filename): string
     @param (dictionary): dict 
     '''
-    dictionary = {}
-    with open(filename) as file:
-        dictionary = yaml.load(file, Loader=yaml.FullLoader)
-    return dictionary
+    try:
+        dictionary = {}
+        with open(filename) as file:
+            dictionary = yaml.load(file, Loader=yaml.FullLoader)
+        return dictionary
+    except Exception as e:
+        print(e)
+
+    return None
 
 
 def writeYAMLFile(filename, dictionary):
@@ -102,6 +111,9 @@ def JSONToYAML():
     '''
     json_data = getJsonData(json_file)
     yml_data = getYamlData(yml_file)
+
+    if not json_data and not yml_data:
+        exit(0)
 
     # loop to all 1st level keys in json file.
     for key in json_data:
