@@ -13,6 +13,9 @@ PATH = 'config/locales'
 ROOT_DIR = os.path.\
     dirname(os.path.abspath(__file__)).\
     replace(SCRIPT_PATH, '')
+
+# set REPLACE_FILES to True if
+# you want to override files.
 REPLACE_FILES = False
 
 
@@ -175,16 +178,14 @@ if __name__ == "__main__":
     os.makedirs(output_files_dir)
     yml_files_list = getListOfFiles(full_path)
 
-    def outputAction(json_file_path, yml_file_path):
+    def outputAction(yml_file_path):
         if REPLACE_FILES:
-            return outputPath(yml_file_path, full_path, output_files_dir)
-        return json_file_path
+            return yml_file_path
+        return outputPath(yml_file_path, full_path, output_files_dir)
 
     for yml_file_path in yml_files_list:
         JSONToYAML(
             json_file_path,
             yml_file_path,
-            # provide json_file_path in output_path
-            # to override files
-            outputAction(json_file_path, yml_file_path)
+            outputAction(yml_file_path)
         )
