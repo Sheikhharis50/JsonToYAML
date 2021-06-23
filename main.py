@@ -5,11 +5,50 @@
 
 import yaml
 import json
+import os
+import shutil
 
-yml_file = 'en.yml'
-json_file = 'input.json'
-# give same name as yml_file to replace it.
-output_file = 'en.yml'
+from pprint import pprint
+
+SCRIPT_PATH = 'bin/scripts'
+PATH = 'config/locales'
+ROOT_DIR = os.path.\
+    dirname(os.path.abspath(__file__)).\
+    replace(SCRIPT_PATH, '')
+
+
+def getListOfFiles(dirName):
+    # create a list of file and sub directories
+    # names in the given directory
+    listOfFile = os.listdir(dirName)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(dirName, entry)
+        # If entry is a directory then get the list of files in this directory
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + getListOfFiles(fullPath)
+        else:
+            allFiles.append(fullPath)
+
+    return allFiles
+
+
+def createPath(relative_path, output_files_dir):
+    output_path = os.path.join(output_files_dir, relative_path)
+    path_dirs = relative_path.split('/')
+    for i in range(0, len(path_dirs)-1):
+        dir_path = os.path.join(output_files_dir, path_dirs[i])
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+    return output_path
+
+
+def outputPath(path, full_path, output_files_dir):
+    relative_path = path.replace(f'{full_path}/', "")
+    output_path = createPath(relative_path, output_files_dir)
+    return output_path
 
 
 def getJsonData(filename):
@@ -103,14 +142,14 @@ def searchAndReplace(key, value, sub_dictionary, dictionary):
     return [False, dictionary]
 
 
-def JSONToYAML():
+def JSONToYAML(json_file_path, yml_file_path, output_file_path):
     '''
     it will replace all the key-value pairs in 
     YAML/YML file with the key-value pairs of JSON file.
     @params: not required.
     '''
-    json_data = getJsonData(json_file)
-    yml_data = getYamlData(yml_file)
+    json_data = getJsonData(json_file_path)
+    yml_data = getYamlData(yml_file_path)
 
     if not json_data and not yml_data:
         exit(0)
@@ -123,8 +162,25 @@ def JSONToYAML():
         )
 
     # write the output file
-    writeYAMLFile(output_file, yml_data)
+    writeYAMLFile(output_file_path, yml_data)
 
 
 if __name__ == "__main__":
-    JSONToYAML()
+
+    full_path = os.path.join(ROOT_DIR, PATH)
+    json_file_path = os.path.join(ROOT_DIR, SCRIPT_PATH, 'input.json')
+    output_files_dir = os.path.join(ROOT_DIR, SCRIPT_PATH, 'output')
+
+    if os.path.exists(output_files_dir):
+        shutil.rmtree(output_files_dir)
+    os.makedirs(output_files_dir)
+    yml_files_list = getListOfFiles(full_path)
+
+    for yml_file_path in yml_files_list:
+        JSONToYAML(
+            json_file_path,
+            yml_file_path,
+            # provide json_file_path in output_path
+            # to override files
+            outputPath(yml_file_path, full_path, output_files_dir)
+        )
