@@ -1,0 +1,25 @@
+en:
+  groups:
+    create:
+      notice: "Group was successfully created."
+      failure: "Group creation failed."
+  password_resets:
+    create:
+      mail_sent: "Email with password reset link sent to user"
+    update:
+      password_changed: "Password changed!"
+  memberships:
+    create:
+      failure: "Request to join group failed, are you a member already?"
+    notice: "Group was created."
+  errors:
+     messages:
+       blank: "Please fill the %{model}'s %{attribute}"
+  activerecord:
+    errors:
+      models:
+        article:
+          attributes:
+            mail: "mail@gmail.com"
+            category_id:
+              missing: "Please select a category"
