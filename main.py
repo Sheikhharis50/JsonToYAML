@@ -8,8 +8,8 @@ import json
 import os
 import shutil
 
-SCRIPT_PATH = 'bin/scripts'
-PATH = 'config/locales'
+SCRIPT_PATH = ''
+YAML_FILES_PATH = 'yaml_files'
 ROOT_DIR = os.path.\
     dirname(os.path.abspath(__file__)).\
     replace(SCRIPT_PATH, '')
@@ -169,7 +169,7 @@ def JSONToYAML(json_file_path, yml_file_path, output_file_path):
 
 if __name__ == "__main__":
 
-    full_path = os.path.join(ROOT_DIR, PATH)
+    full_path = os.path.join(ROOT_DIR, YAML_FILES_PATH)
     json_file_path = os.path.join(ROOT_DIR, SCRIPT_PATH, 'input.json')
     output_files_dir = os.path.join(ROOT_DIR, SCRIPT_PATH, 'output')
 
